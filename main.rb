@@ -13,4 +13,15 @@ module Enumerable
       yield self[i], i
     end
   end
+
+  def my_select
+    return enum_for unless block_given?
+    new_arr = []
+    count = 0
+    my_each do |_element|
+      new_arr << self[count] if yield(self[count])
+      count += 1
+    end
+    new_arr
+  end
 end
