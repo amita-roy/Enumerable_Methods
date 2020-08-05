@@ -24,4 +24,16 @@ module Enumerable
     end
     new_arr
   end
+
+  def my_all?
+    if block_given?
+      my_each do |element|
+        return false unless yield element
+      end
+      true
+    else
+      return false if self.include?(nil || false)
+    end
+    true
+  end
 end
