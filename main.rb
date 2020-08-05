@@ -36,4 +36,14 @@ module Enumerable
     end
     true
   end
+
+  def my_any?
+    return false if empty?
+    if block_given?
+      self.my_each do |element|
+        return true if yield element
+      end
+    end
+    return !self.my_select { |x| x != false && x != nil }.empty?
+  end
 end
