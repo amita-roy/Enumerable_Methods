@@ -78,4 +78,13 @@ module Enumerable
       return count
     end
   end
+
+  def my_map(proc = nil)
+    new_arr = []
+    return enum_for unless proc || block_given?
+    for e in self
+      new_arr << proc ? proc.call(e) : yield(e)
+    end
+    return new_arr
+  end
 end
