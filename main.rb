@@ -107,3 +107,7 @@ module Enumerable
     acc
   end
 end
+
+def multiply_els(arr)
+  arr.my_inject { |acc, element| acc * element }
+end
