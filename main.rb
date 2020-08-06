@@ -87,4 +87,23 @@ module Enumerable
     end
     return new_arr
   end
+
+  def my_inject(initial = nil, sym = nil)
+    if block_given?
+      acc = initial || self[0]
+      start = initial ? 0 : 1
+      for i in start..self.length - 1
+        acc = yield(acc, self[i])
+      end
+    else
+      acc = initial.is_a?(Symbol) ? self[0] : initial
+      start = initial.is_a?(Symbol) ? 1 : 0
+      symbol = sym || initial
+
+      for i in start..self.length - 1
+        acc = acc.send(symbol, self[i])
+      end
+    end
+    acc
+  end
 end
