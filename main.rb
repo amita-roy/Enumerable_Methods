@@ -66,4 +66,16 @@ module Enumerable
       end
     end
   end
+
+  def my_count(arg = nil)
+    count = 0
+    return self.length unless arg || block_given?
+    return self.my_select { |e| e == arg }.length if arg
+    if block_given?
+      for e in self
+        count += 1 if yield e
+      end
+      return count
+    end
+  end
 end
