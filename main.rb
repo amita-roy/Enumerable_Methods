@@ -115,6 +115,7 @@ module Enumerable
     arr = to_a
     new_arr = []
     return enum_for unless proc || block_given?
+
     for e in arr
       new_arr << (proc ? proc.call(e) : yield(e))
     end

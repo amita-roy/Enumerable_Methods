@@ -59,3 +59,7 @@ Style/RedundantReturn:
   Enabled: false
 Style/For:
   Enabled: false
+Style/InverseMethods:
+  Enabled: false
+Style/GuardClause:
+  Enabled: false
