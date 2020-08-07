@@ -1,11 +1,14 @@
 # rubocop:disable Style/CaseEquality
-# rubocop:enable
+# rubocop:disable Metrics/ModuleLength
+# rubocop:disable Metrics/CyclomaticComplexity
+# rubocop:disable Metrics/PerceivedComplexity
 
 module Enumerable
   def my_each
+    arr = self.to_a
     return enum_for unless block_given?
 
-    for e in self
+    for e in arr
       yield e
     end
   end
@@ -29,14 +32,15 @@ module Enumerable
   end
 
   def my_all?(arg = nil)
+    arr = self.to_a
     if !arg.nil?
       case arg
       when Regexp
-        return self.my_select { |x| x =~ arg }.length == self.to_a.length
+        return arr.my_select { |x| x =~ arg }.length == arr.length
       when Class
-        return self.my_select { |x| x.is_a?(arg) }.length == self.to_a.length
+        return arr.my_select { |x| x.is_a?(arg) }.length == arr.length
       else
-        return self.my_select { |x| x == arg }.length == self.to_a.length
+        return arr.my_select { |x| x == arg }.length == arr.length
       end
     end
 
@@ -45,47 +49,49 @@ module Enumerable
         return false unless yield element
       end
     end
-    return !(self.include?(nil) || self.include?(false))
+    return !(arr.include?(nil) || arr.include?(false))
   end
 
   def my_any?(arg = nil)
-    return false if self.to_a.empty?
+    arr = self.to_a
+    return false if arr.to_a.empty?
     if !arg.nil?
       case arg
       when Regexp
-        return !self.my_select { |x| x =~ arg }.empty?
+        return !arr.my_select { |x| x =~ arg }.empty?
       when Class
-        return !self.my_select { |x| x.is_a?(arg) }.empty?
+        return !arr.my_select { |x| x.is_a?(arg) }.empty?
       else
-        return !self.my_select { |x| x == arg }.empty?
+        return !arr.my_select { |x| x == arg }.empty?
       end
     end
 
     if arg.nil? && block_given?
-      self.my_each do |element|
+      my_each do |element|
         return false unless yield(element)
       end
     end
-    return !self.my_select { |x| x != false && x != nil }.empty?
+    return !arr.my_select { |x| x != false && x != nil }.empty?
   end
 
   def my_none?(arg = nil)
+    arr = self.to_a
     return true if self.to_a.empty?
 
     if !arg.nil?
       case arg
       when Regexp
-        return self.my_select { |x| x =~ arg }.empty?
+        return arr.my_select { |x| x =~ arg }.empty?
       when Class
-        return self.my_select { |x| x.is_a?(arg) }.empty?
+        return arr.my_select { |x| x.is_a?(arg) }.empty?
       else
-        return self.my_select { |x| x == arg }.empty?
+        return arr.my_select { |x| x == arg }.empty?
       end
     end
 
     if block_given? && arg.nil?
       result = true
-      for e in self
+      for e in arr
         if yield(e)
           result = false
         end
@@ -93,7 +99,7 @@ module Enumerable
       return result
     end
 
-    return !(self.any?)
+    return !(arr.any?)
   end
 
   def my_count(arg = nil)
@@ -110,9 +116,10 @@ module Enumerable
   end
 
   def my_map(proc = nil)
+    arr - self.to_a
     new_arr = []
     return enum_for unless proc || block_given?
-    for e in self
+    for e in arr
       new_arr << (proc ? proc.call(e) : yield(e))
     end
     return new_arr
