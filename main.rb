@@ -9,70 +9,95 @@ module Enumerable
   def my_each_with_index
     return enum_for unless block_given?
 
-    for i in 0..self.length - 1
-      yield self[i], i
+    for e in self.to_a
+      yield(e, self.index(e))
     end
   end
 
   def my_select
     return enum_for unless block_given?
     new_arr = []
-    count = 0
-    my_each do |_element|
-      new_arr << self[count] if yield(self[count])
-      count += 1
+    my_each do |element|
+      new_arr << element if yield(element)
     end
     new_arr
   end
 
-  def my_all?
-    if block_given?
+  def my_all?(arg = nil)
+    if !arg.nil?
+      case arg
+      when Regexp
+        return self.my_select { |x| x =~ arg }.length == self.to_a.length
+      when Class
+        return self.my_select { |x| x.is_a?(arg) }.length == self.to_a.length
+      else
+        return self.my_select { |x| x == arg }.length == self.to_a.length
+      end
+    end
+
+    if arg.nil? && block_given?
       my_each do |element|
         return false unless yield element
       end
-      true
-    else
-      return false if self.include?(nil || false)
     end
-    true
+    return !(self.include?(nil) || self.include?(false))
   end
 
-  def my_any?
-    return false if empty?
-    if block_given?
+  def my_any?(arg = nil)
+    return false if self.to_a.empty?
+    if !arg.nil?
+      case arg
+      when Regexp
+        return !self.my_select { |x| x =~ arg }.empty?
+      when Class
+        return !self.my_select { |x| x.is_a?(arg) }.empty?
+      else
+        return !self.my_select { |x| x == arg }.empty?
+      end
+    end
+
+    if arg.nil? && block_given?
       self.my_each do |element|
-        return true if yield element
+        return false unless yield(element)
       end
     end
     return !self.my_select { |x| x != false && x != nil }.empty?
   end
 
-  def my_none?
-    return true if empty?
+  def my_none?(arg = nil)
+    return true if self.to_a.empty?
 
-    if block_given?
-      for e in self
-        if yield e
-          return false
-        else
-          return true
-        end
-      end
-    else
-      if !(self.my_any? || self.my_all?)
-        return true
+    if !arg.nil?
+      case arg
+      when Regexp
+        return self.my_select { |x| x =~ arg }.empty?
+      when Class
+        return self.my_select { |x| x.is_a?(arg) }.empty?
       else
-        return false
+        return self.my_select { |x| x == arg }.empty?
       end
     end
+
+    if block_given? && arg.nil?
+      result = true
+      for e in self
+        if yield(e)
+          result = false
+        end
+      end
+      return result
+    end
+
+    return !(self.any?)
   end
 
   def my_count(arg = nil)
+    arr = self.to_a
     count = 0
-    return self.length unless arg || block_given?
-    return self.my_select { |e| e == arg }.length if arg
+    return arr.length unless arg || block_given?
+    return arr.my_select { |e| e == arg }.length if arg
     if block_given?
-      for e in self
+      for e in arr
         count += 1 if yield e
       end
       return count
@@ -83,25 +108,26 @@ module Enumerable
     new_arr = []
     return enum_for unless proc || block_given?
     for e in self
-      new_arr << proc ? proc.call(e) : yield(e)
+      new_arr << (proc ? proc.call(e) : yield(e))
     end
     return new_arr
   end
 
   def my_inject(initial = nil, sym = nil)
+    arr = self.to_a
     if block_given?
-      acc = initial || self[0]
+      acc = initial || arr[0]
       start = initial ? 0 : 1
-      for i in start..self.length - 1
-        acc = yield(acc, self[i])
+      for i in start..arr.length - 1
+        acc = yield(acc, arr[i])
       end
     else
-      acc = initial.is_a?(Symbol) ? self[0] : initial
+      acc = initial.is_a?(Symbol) ? arr[0] : initial
       start = initial.is_a?(Symbol) ? 1 : 0
       symbol = sym || initial
 
-      for i in start..self.length - 1
-        acc = acc.send(symbol, self[i])
+      for i in start..arr.length - 1
+        acc = acc.send(symbol, arr[i])
       end
     end
     acc
@@ -111,3 +137,5 @@ end
 def multiply_els(arr)
   arr.my_inject { |acc, element| acc * element }
 end
+
+p ["an", "abc", "xyza"].my_none? { |x| x.length >= 4 }
