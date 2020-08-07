@@ -55,3 +55,7 @@ Style/HashTransformValues:
   Enabled: false
 Style/CaseEquality:
   Enabled: false
+Style/RedundantReturn:
+  Enabled: false
+Style/For:
+  Enabled: false
