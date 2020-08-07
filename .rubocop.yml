@@ -16,6 +16,12 @@ Metrics/ClassLength:
 Metrics/BlockLength:
   ExcludedMethods: ["describe"]
   Max: 30
+Metrics/ModuleLength:
+  Enable: false
+Metrics/CyclomaticComplexity:
+  Enable: false
+Metrics/PerceivedComplexity:
+  Enable: false
 
 Style/Documentation:
   Enabled: false
@@ -46,4 +52,6 @@ Style/HashEachMethods:
 Style/HashTransformKeys:
   Enabled: false
 Style/HashTransformValues:
+  Enabled: false
+Style/CaseEquality:
   Enabled: false

@@ -1,11 +1,6 @@
-# rubocop:disable Style/CaseEquality
-# rubocop:disable Metrics/ModuleLength
-# rubocop:disable Metrics/CyclomaticComplexity
-# rubocop:disable Metrics/PerceivedComplexity
-
 module Enumerable
   def my_each
-    arr = self.to_a
+    arr = to_a
     return enum_for unless block_given?
 
     for e in arr
@@ -14,7 +9,7 @@ module Enumerable
   end
 
   def my_each_with_index
-    arr = self.to_a
+    arr = to_a
     return enum_for unless block_given?
 
     arr.my_each do |e|
@@ -32,7 +27,7 @@ module Enumerable
   end
 
   def my_all?(arg = nil)
-    arr = self.to_a
+    arr = to_a
     if !arg.nil?
       case arg
       when Regexp
@@ -53,9 +48,10 @@ module Enumerable
   end
 
   def my_any?(arg = nil)
-    arr = self.to_a
+    arr = to_a
     return false if arr.to_a.empty?
-    if !arg.nil?
+
+    unless arg.nil?
       case arg
       when Regexp
         return !arr.my_select { |x| x =~ arg }.empty?
@@ -71,12 +67,12 @@ module Enumerable
         return false unless yield(element)
       end
     end
-    return !arr.my_select { |x| x != false && x != nil }.empty?
+    return !arr.my_select { |x| x != false && x.nil? }.empty?
   end
 
   def my_none?(arg = nil)
-    arr = self.to_a
-    return true if self.to_a.empty?
+    arr = to_a
+    return true if to_a.empty?
 
     if !arg.nil?
       case arg
@@ -103,7 +99,7 @@ module Enumerable
   end
 
   def my_count(arg = nil)
-    arr = self.to_a
+    arr = to_a
     count = 0
     return arr.length unless arg || block_given?
     return arr.my_select { |e| e == arg }.length if arg
@@ -116,7 +112,7 @@ module Enumerable
   end
 
   def my_map(proc = nil)
-    arr - self.to_a
+    arr - to_a
     new_arr = []
     return enum_for unless proc || block_given?
     for e in arr
@@ -126,7 +122,7 @@ module Enumerable
   end
 
   def my_inject(initial = nil, sym = nil)
-    arr = self.to_a
+    arr = to_a
     if block_given?
       acc = initial || arr[0]
       start = initial ? 0 : 1
