@@ -1,16 +1,20 @@
+# rubocop:disable Style/CaseEquality
+
 module Enumerable
   def my_each
     return enum_for unless block_given?
+
     for e in self
       yield e
     end
   end
 
   def my_each_with_index
+    arr = self.to_a
     return enum_for unless block_given?
 
-    for e in self.to_a
-      yield(e, self.index(e))
+    arr.my_each do |e|
+      yield(e, arr.index(e))
     end
   end
 
