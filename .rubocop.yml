@@ -25,6 +25,8 @@ Metrics/PerceivedComplexity:
 
 Style/Documentation:
   Enabled: false
+Style/RedundantSelf:
+  Enabled: false
 Style/ClassAndModuleChildren:
   Enabled: false
 Style/EachForSimpleLoop:

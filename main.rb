@@ -3,7 +3,7 @@ module Enumerable
     arr = to_a
     return enum_for unless block_given?
 
-    for e in arr
+    for e in self
       yield e
     end
   end
@@ -28,7 +28,6 @@ module Enumerable
   end
 
   def my_all?(arg = nil)
-    arr = to_a
     unless arg.nil?
       case arg
       when Regexp
@@ -49,8 +48,7 @@ module Enumerable
   end
 
   def my_any?(arg = nil)
-    arr = to_a
-    return false if arr.to_a.empty?
+    return false if self.to_a.empty?
 
     unless arg.nil?
       case arg
@@ -68,7 +66,7 @@ module Enumerable
         return false unless yield(element)
       end
     end
-    return !arr.my_select { |x| x != false && x.nil? }.empty?
+    return !self.my_select { |x| x != false && !x.nil? }.empty?
   end
 
   def my_none?(arg = nil)
@@ -88,13 +86,13 @@ module Enumerable
 
     if block_given? && arg.nil?
       result = true
-      for e in arr
+      for e in self
         result = false if yield(e)
       end
       return result
     end
 
-    return !arr.any?
+    return !self.any?
   end
 
   def my_count(arg = nil)
@@ -116,7 +114,7 @@ module Enumerable
     new_arr = []
     return enum_for unless proc || block_given?
 
-    for e in arr
+    for e in self
       new_arr << (proc ? proc.call(e) : yield(e))
     end
     return new_arr
