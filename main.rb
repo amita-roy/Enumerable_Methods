@@ -45,7 +45,8 @@ module Enumerable
 
   def my_any?(arg = nil)
     return false if self.to_a.empty?
-    if !arg.nil?
+
+    unless arg.nil?
       case arg
       when Regexp
         return !self.my_select { |x| x =~ arg }.empty?
@@ -61,13 +62,13 @@ module Enumerable
         return false unless yield(element)
       end
     end
-    return !self.my_select { |x| x != false && x != nil }.empty?
+    return !self.my_select { |x| x != false && !x.nil? }.empty?
   end
 
   def my_none?(arg = nil)
     return true if self.to_a.empty?
 
-    if !arg.nil?
+    unless arg.nil?
       case arg
       when Regexp
         return self.my_select { |x| x =~ arg }.empty?
@@ -81,14 +82,12 @@ module Enumerable
     if block_given? && arg.nil?
       result = true
       for e in self
-        if yield(e)
-          result = false
-        end
+        result = false if yield(e)
       end
       return result
     end
 
-    return !(self.any?)
+    return !self.any?
   end
 
   def my_count(arg = nil)
@@ -96,6 +95,7 @@ module Enumerable
     count = 0
     return arr.length unless arg || block_given?
     return arr.my_select { |e| e == arg }.length if arg
+
     if block_given?
       for e in arr
         count += 1 if yield e
@@ -107,6 +107,7 @@ module Enumerable
   def my_map(proc = nil)
     new_arr = []
     return enum_for unless proc || block_given?
+
     for e in self
       new_arr << (proc ? proc.call(e) : yield(e))
     end
@@ -137,5 +138,3 @@ end
 def multiply_els(arr)
   arr.my_inject { |acc, element| acc * element }
 end
-
-p ["an", "abc", "xyza"].my_none? { |x| x.length >= 4 }
