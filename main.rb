@@ -1,6 +1,5 @@
 module Enumerable
   def my_each
-    arr = to_a
     return enum_for unless block_given?
 
     for e in self
@@ -9,11 +8,10 @@ module Enumerable
   end
 
   def my_each_with_index
-    arr = to_a
     return enum_for unless block_given?
 
-    arr.my_each do |e|
-      yield(e, arr.index(e))
+    for e in self.to_a
+      yield(e, self.index(e))
     end
   end
 
@@ -31,11 +29,11 @@ module Enumerable
     unless arg.nil?
       case arg
       when Regexp
-        return arr.my_select { |x| x =~ arg }.length == arr.length
+        return self.my_select { |x| x =~ arg }.length == self.to_a.length
       when Class
-        return arr.my_select { |x| x.is_a?(arg) }.length == arr.length
+        return self.my_select { |x| x.is_a?(arg) }.length == self.to_a.length
       else
-        return arr.my_select { |x| x == arg }.length == arr.length
+        return self.my_select { |x| x == arg }.length == self.to_a.length
       end
     end
 
@@ -44,7 +42,7 @@ module Enumerable
         return false unless yield element
       end
     end
-    return !(arr.include?(nil) || arr.include?(false))
+    return !(self.include?(nil) || self.include?(false))
   end
 
   def my_any?(arg = nil)
@@ -53,16 +51,16 @@ module Enumerable
     unless arg.nil?
       case arg
       when Regexp
-        return !arr.my_select { |x| x =~ arg }.empty?
+        return !self.my_select { |x| x =~ arg }.empty?
       when Class
-        return !arr.my_select { |x| x.is_a?(arg) }.empty?
+        return !self.my_select { |x| x.is_a?(arg) }.empty?
       else
-        return !arr.my_select { |x| x == arg }.empty?
+        return !self.my_select { |x| x == arg }.empty?
       end
     end
 
     if arg.nil? && block_given?
-      my_each do |element|
+      self.my_each do |element|
         return false unless yield(element)
       end
     end
@@ -70,17 +68,16 @@ module Enumerable
   end
 
   def my_none?(arg = nil)
-    arr = to_a
-    return true if to_a.empty?
+    return true if self.to_a.empty?
 
     unless arg.nil?
       case arg
       when Regexp
-        return arr.my_select { |x| x =~ arg }.empty?
+        return self.my_select { |x| x =~ arg }.empty?
       when Class
-        return arr.my_select { |x| x.is_a?(arg) }.empty?
+        return self.my_select { |x| x.is_a?(arg) }.empty?
       else
-        return arr.my_select { |x| x == arg }.empty?
+        return self.my_select { |x| x == arg }.empty?
       end
     end
 
@@ -96,7 +93,7 @@ module Enumerable
   end
 
   def my_count(arg = nil)
-    arr = to_a
+    arr = self.to_a
     count = 0
     return arr.length unless arg || block_given?
     return arr.my_select { |e| e == arg }.length if arg
@@ -110,7 +107,6 @@ module Enumerable
   end
 
   def my_map(proc = nil)
-    arr = to_a
     new_arr = []
     return enum_for unless proc || block_given?
 
@@ -121,7 +117,7 @@ module Enumerable
   end
 
   def my_inject(initial = nil, sym = nil)
-    arr = to_a
+    arr = self.to_a
     if block_given?
       acc = initial || arr[0]
       start = initial ? 0 : 1
