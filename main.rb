@@ -1,6 +1,7 @@
 module Enumerable
   def my_each
     return enum_for unless block_given?
+
     for e in self
       yield e
     end
@@ -16,6 +17,7 @@ module Enumerable
 
   def my_select
     return enum_for unless block_given?
+
     new_arr = []
     my_each do |element|
       new_arr << element if yield(element)
@@ -24,7 +26,7 @@ module Enumerable
   end
 
   def my_all?(arg = nil)
-    if !arg.nil?
+    unless arg.nil?
       case arg
       when Regexp
         return self.my_select { |x| x =~ arg }.length == self.to_a.length
