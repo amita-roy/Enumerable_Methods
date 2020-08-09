@@ -10,8 +10,8 @@ module Enumerable
   def my_each_with_index
     return enum_for unless block_given?
 
-    for e in self.to_a
-      yield(e, self.index(e))
+    for e in self
+      yield(e, self.to_a.index(e))
     end
   end
 
@@ -61,8 +61,9 @@ module Enumerable
 
     if arg.nil? && block_given?
       self.my_each do |element|
-        return false unless yield(element)
+        return true if yield(element)
       end
+      return false
     end
     return !self.my_select { |x| x != false && !x.nil? }.empty?
   end
@@ -117,6 +118,8 @@ module Enumerable
   end
 
   def my_inject(initial = nil, sym = nil)
+    raise LocalJumpError if initial.nil? && !block_given?
+
     arr = self.to_a
     if block_given?
       acc = initial || arr[0]
