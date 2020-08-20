@@ -10,11 +10,11 @@ describe Enumerable do
   describe '#my_each' do
     context 'when called with a &block' do
       it 'returns an array when called on an array' do
-        expect(test_array.my_each { }).to eq(test_array.each { })
+        expect(test_array.my_each { test_block }).to eq(test_array.each { test_block })
       end
 
       it 'returns a range when called on a range' do
-        expect(test_range.my_each { }).to eq(test_range.each { })
+        expect(test_range.my_each { test_block }).to eq(test_range.each { test_block })
       end
     end
 
@@ -32,14 +32,14 @@ describe Enumerable do
   describe '#my_each_with_index' do
     context 'when called with a &block' do
       it 'returns the original array when called on an array' do
-        expect(test_array.my_each_with_index { }).to eql(test_array)
+        expect(test_array.my_each_with_index { test_block }).to eql(test_array)
       end
       it 'returns the range itself when called on a range' do
-        expect(test_range.my_each_with_index { }).to eql(test_range)
+        expect(test_range.my_each_with_index { test_block }).to eql(test_range)
       end
 
       it 'returns the hash itself when called on a hash' do
-        expect(test_hash.my_each_with_index { }).to eql(test_hash)
+        expect(test_hash.my_each_with_index { test_block }).to eql(test_hash)
       end
 
       context 'returns the same result like #each_with_index' do
@@ -87,7 +87,7 @@ describe Enumerable do
   describe '#my_all?' do
     context 'when called with only an argument' do
       it 'returns true if all the elements in the array eql argument, else false' do
-        expect(test_array.my_all?(Numeric)).to eql (test_array.all?(Numeric))
+        expect(test_array.my_all?(Numeric)).to eql(test_array.all?(Numeric))
       end
 
       it 'returns true if all the elements in the range eql argument, else false' do
@@ -115,7 +115,7 @@ describe Enumerable do
       end
 
       it 'should not return false if called on an empty array' do
-        expect([].my_all?).not_to be (false)
+        expect([].my_all?).not_to be(false)
       end
     end
 
@@ -144,7 +144,7 @@ describe Enumerable do
       end
 
       it 'should not return true if called on an empty array like #my_all?' do
-        expect([].any?).not_to be (true)
+        expect([].any?).not_to be(true)
       end
     end
 
@@ -182,7 +182,7 @@ describe Enumerable do
       end
 
       it 'should not return false when called on an empty array' do
-        expect([].my_none?).not_to be (false)
+        expect([].my_none?).not_to be(false)
       end
     end
 
