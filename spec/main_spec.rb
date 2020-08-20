@@ -72,7 +72,7 @@ describe Enumerable do
         expect(test_range.my_select { |e| e > 5 }).to eq(test)
       end
 
-      it 'not be a nil when called on an empty array' do
+      it 'not to be a nil when called on an empty array' do
         expect([].my_select { |e| e > 5 }).not_to be nil
       end
     end
@@ -85,14 +85,54 @@ describe Enumerable do
   end
 
   describe '#my_all?' do
+    context 'when called with only an argument' do
+      it 'returns true if the argument equals all the elements in the array else false' do
+        expect(test_array.my_all?(Numeric)).to eql (test_array.all?(Numeric))
+      end
+
+      it 'returns true if the argument equals all the elements in the range else false' do
+        expect(test_range.my_all?(3)).to eql(test_range.all?(3))
+      end
+    end
+
     context 'when called with only &block' do
       it 'returns true if all elements in the array yield true;' do
-        expect(test_array.my_all? { test_block }).to(eql(test_array.all? { test_block }))
+        expect(test_array.my_all? { test_block }).to eql(test_array.all? { test_block })
       end
 
       it 'returns true if all elements in the range yield true;' do
-        expect(test_range.my_all? { test_block }).to(eql(test_range.all? { test_block }))
+        expect(test_range.my_all? { test_block }).to eql(test_range.all? { test_block })
       end
     end
+
+    context 'when called with no block and no argument' do
+      it 'return true if all the element in the array are truthy else false' do
+        expect(test_array.my_all?).to eql(test_array.all?)
+      end
+
+      it 'return true if all the element in the range are truthy else false' do
+        expect(test_range.my_all?).to eql(test_range.all?)
+      end
+
+      it 'should not return false if called on an empty array' do
+        expect([].my_all?).not_to be (false)
+      end
+    end
+
+    context 'when called with a block and an argument' do
+      it 'neglects the block and use the argument' do
+        expect(test_array.my_all?(3) { test_block }).to eql(test_array.all?(3) { test_block })
+      end
+    end
+
+    context 'when pattern/regex doesn\'t match' do
+      it 'return false if every element in the array doesn\'t match with pattern ' do
+        mixed_array = ['that', 'cat', 23, 'mat', true]
+        expect(mixed_array.my_all?(/at/)).to eql(mixed_array.all?(/at/))
+      end
+    end
+  end
+
+  describe '#my_any?' do
   end
 end
