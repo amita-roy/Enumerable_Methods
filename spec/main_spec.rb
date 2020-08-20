@@ -2,7 +2,7 @@ require_relative '../main.rb'
 
 describe Enumerable do
   let(:test_array) { [20, 3, 12, 7, 15] }
-  let(:string_array) { %w(cat, passion boolean possibility) }
+  let(:string_array) { %w[cat passion boolean possibility] }
   let(:test_range) { (1..9) }
   let(:test_hash) { { 'cat' => 'meow', 'dog' => 'bark' } }
   let(:test_block) { proc { |e| e.even? } }
@@ -248,5 +248,30 @@ describe Enumerable do
   end
 
   describe '#my_inject' do
+    context 'when no argument and no $block given' do
+      it 'raise localjumperror' do
+        expect { test_array.my_inject }.to raise_error(LocalJumpError)
+      end
+    end
+
+    it 'when 2 arguments provided and one of them is a symbol' do
+      expect(test_array.my_inject(1, :*)).to eq(756_00)
+    end
+
+    context 'when only one argument provided' do
+      it 'raise a TypeError if provided argument is not a symbol nor a string' do
+        expect { test_array.my_inject(2) }.to raise_error(TypeError)
+      end
+
+      it 'return the sum of all the element in the array if argument is a  :+ symbol' do
+        expect([1, 2, 3].my_inject(:+)).to eq([1, 2, 3].inject(:+))
+      end
+    end
+
+    context 'when one argument and a &block provided' do
+      it 'return the result as per the condition provided in the block and argument act as an accumulator' do
+        expect([1, 2, 3].my_inject(2) { |e, n| e + n }).to eq(8)
+      end
+    end
   end
 end
