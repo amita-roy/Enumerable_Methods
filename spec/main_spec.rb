@@ -134,5 +134,40 @@ describe Enumerable do
   end
 
   describe '#my_any?' do
+    context 'when called with no &block and no argument' do
+      it 'returns true if any element of the array are truthy else false' do
+        expect(test_array.my_any?).to eql(test_array.any?)
+      end
+
+      it 'returns true if any element in the range are truthy else false' do
+        expect(test_range.my_any?).to eql(test_range.any?)
+      end
+
+      it 'should not return true if called on an empty array like #my_all?' do
+        expect([].any?).not_to be (true)
+      end
+    end
+
+    context 'when called with only an argument' do
+      it 'returns true if the argument equals any the elements in the array else false' do
+        expect(test_array.my_any?(String)).to eql(test_array.any?(String))
+      end
+
+      it 'returns true if the argument equals any the elements in the range, else false' do
+        expect(test_range.my_any?(4)).to eql(test_range.any?(4))
+      end
+    end
+
+    context 'when called with only a &block' do
+      it('returns true if any element in the array yield true, else false') do
+        expect(test_array.my_any? { test_block }).to(eql(test_array.any? { test_block }))
+      end
+    end
+
+    context 'when called with an argumenta and a &block ' do
+      it 'use the argument and neglects the block' do
+        expect(test_array.my_any?(3) { test_block }).to eql(test_array.any?(3) { test_block })
+      end
+    end
   end
 end
