@@ -246,4 +246,7 @@ describe Enumerable do
       expect(test_array.my_map { |e| e * 2 }).to eql([40, 6, 24, 14, 30])
     end
   end
+
+  describe '#my_inject' do
+  end
 end
