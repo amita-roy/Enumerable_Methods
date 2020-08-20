@@ -86,21 +86,21 @@ describe Enumerable do
 
   describe '#my_all?' do
     context 'when called with only an argument' do
-      it 'returns true if the argument equals all the elements in the array else false' do
+      it 'returns true if all the elements in the array eql argument, else false' do
         expect(test_array.my_all?(Numeric)).to eql (test_array.all?(Numeric))
       end
 
-      it 'returns true if the argument equals all the elements in the range else false' do
+      it 'returns true if all the elements in the range eql argument, else false' do
         expect(test_range.my_all?(3)).to eql(test_range.all?(3))
       end
     end
 
     context 'when called with only &block' do
-      it 'returns true if all elements in the array yield true;' do
+      it 'returns true if all elements in the array yield true' do
         expect(test_array.my_all? { test_block }).to eql(test_array.all? { test_block })
       end
 
-      it 'returns true if all elements in the range yield true;' do
+      it 'returns true if all elements in the range yield true' do
         expect(test_range.my_all? { test_block }).to eql(test_range.all? { test_block })
       end
     end
@@ -135,11 +135,11 @@ describe Enumerable do
 
   describe '#my_any?' do
     context 'when called with no &block and no argument' do
-      it 'returns true if any element of the array are truthy else false' do
+      it 'returns true if any elements of the array is truthy, else false' do
         expect(test_array.my_any?).to eql(test_array.any?)
       end
 
-      it 'returns true if any element in the range are truthy else false' do
+      it 'returns true if any elements in the range is truthy, else false' do
         expect(test_range.my_any?).to eql(test_range.any?)
       end
 
@@ -149,17 +149,17 @@ describe Enumerable do
     end
 
     context 'when called with only an argument' do
-      it 'returns true if the argument equals any the elements in the array else false' do
+      it 'returns true if any of the elements in the array eql argument, else false' do
         expect(test_array.my_any?(String)).to eql(test_array.any?(String))
       end
 
-      it 'returns true if the argument equals any the elements in the range, else false' do
+      it 'returns true if any of the elements in the range eql argument, else false' do
         expect(test_range.my_any?(4)).to eql(test_range.any?(4))
       end
     end
 
     context 'when called with only a &block' do
-      it('returns true if any element in the array yield true, else false') do
+      it('returns true if any element yield true in the array, else false') do
         expect(test_array.my_any? { test_block }).to(eql(test_array.any? { test_block }))
       end
     end
@@ -168,6 +168,82 @@ describe Enumerable do
       it 'use the argument and neglects the block' do
         expect(test_array.my_any?(3) { test_block }).to eql(test_array.any?(3) { test_block })
       end
+    end
+  end
+
+  describe '#my_none?' do
+    context 'when called with no argument and no &block' do
+      it 'returns false if any of the element is truthy, else true' do
+        expect(test_array.my_none?).to eql(test_array.none?)
+      end
+
+      it 'returns false if any of the element in the range is truthy, else true' do
+        expect(test_range.my_none?).to eql(test_range.none?)
+      end
+
+      it 'should not return false when called on an empty array' do
+        expect([].my_none?).not_to be (false)
+      end
+    end
+
+    context 'when called with only an argument' do
+      it 'returns true if none of the elements in the array is truthy, else false' do
+        expect(test_array.my_none?(Numeric)).to eql(test_array.none?(Numeric))
+      end
+
+      it 'returns true if none of the elements in the range is truthy, else false' do
+        expect(test_range.my_none?(4)).to eql(test_range.none?(4))
+      end
+    end
+
+    context 'when called with only a &block' do
+      it 'returns true if none of the element in the array yield true, else false' do
+        expect(test_array.my_none? { test_block }).to eql(test_array.none? { test_block })
+      end
+    end
+
+    context('when called with a block and an argument') do
+      it 'use the argument and neglects the &block' do
+        expect(test_array.my_none?(44) { test_block }).to eql(test_array.none?(44) { test_block })
+      end
+    end
+  end
+
+  describe '#my_count' do
+    context 'when called with no argument and no $block' do
+      it 'returns the length of the array' do
+        expect(test_array.my_count).to eql(test_array.length)
+      end
+    end
+
+    context 'when called with only an argument' do
+      it 'returns the count of the element in the array that is eql to argument' do
+        expect([2, 3, 5, 2, 4].my_count(2)).to eql(2)
+      end
+    end
+
+    context 'when called with only a &block' do
+      it 'returns the count of element in the array for which block yields true' do
+        expect([2, 3, 5, 2, 4].my_count { |e| e > 3 }).to eql(2)
+      end
+    end
+
+    context 'when called with a block and an argument' do
+      it 'use the argument and neglects the block' do
+        expect([2, 3, 5, 2, 4].my_count(4) { |e| e > 3 }).to eql(1)
+      end
+    end
+  end
+
+  describe '#my_map' do
+    context 'when no &block given' do
+      it 'returns an array enumerator' do
+        expect(test_array.my_map).to be_instance_of(Enumerator)
+      end
+    end
+
+    it 'returns a new array' do
+      expect(test_array.my_map { |e| e * 2 }).to eql([40, 6, 24, 14, 30])
     end
   end
 end
