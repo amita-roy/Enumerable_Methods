@@ -42,11 +42,19 @@ _cd Enumerable_Methods_
 
 **Step 1**:
 
-_Visit this site <https://repl.it/@amita_r/EnumerableMethods#main.rb>_
+_After cloning the repository, open the terminal and Install RSpec on your local system by running:_
+
+`gem install rspec`
 
 **Step 2**:
 
-_Click run_
+_Run the tests with the command:_
+
+`rspec`
+
+> Test gif
+
+![test_play](assets/images/test.gif)
 
 ## Authors
 

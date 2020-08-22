@@ -7,8 +7,8 @@ module Enumerable
     end
   end
 
-  def my_each_with_index
-    return enum_for unless block_given?
+  def my_each_with_index(args = nil)
+    return enum_for if !block_given? || args
 
     for e in self
       yield(e, self.to_a.index(e))
@@ -19,7 +19,7 @@ module Enumerable
     return enum_for unless block_given?
 
     new_arr = []
-    my_each do |element|
+    self.my_each do |element|
       new_arr << element if yield(element)
     end
     new_arr
