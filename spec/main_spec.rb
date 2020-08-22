@@ -1,4 +1,5 @@
 require_relative '../main.rb'
+require_relative 'shared_context'
 
 describe Enumerable do
   let(:test_array) { [20, 3, 12, 7, 15] }
@@ -7,7 +8,13 @@ describe Enumerable do
   let(:test_hash) { { 'cat' => 'meow', 'dog' => 'bark' } }
   let(:test_block) { proc { |e| e.even? } }
 
+  before_context
+
+  ending_after_context
+
   describe '#my_each' do
+    after_context('#my_each_with_index')
+
     context 'when called with a &block' do
       it 'returns an array when called on an array' do
         expect(test_array.my_each { test_block }).to eq(test_array.each { test_block })
@@ -30,6 +37,8 @@ describe Enumerable do
   end
 
   describe '#my_each_with_index' do
+    after_context('#my_select')
+
     context 'when called with a &block' do
       it 'returns the original array when called on an array' do
         expect(test_array.my_each_with_index { test_block }).to eql(test_array)
@@ -61,6 +70,8 @@ describe Enumerable do
   end
 
   describe '#my_select' do
+    after_context('#my_all?')
+
     context 'when called with a &block' do
       it 'returns an array of elements yield true when called on array' do
         test = test_array.select { |e| e > 3 }
@@ -85,6 +96,8 @@ describe Enumerable do
   end
 
   describe '#my_all?' do
+    after_context('#my_any?')
+
     context 'when called with only an argument' do
       it 'returns true if all the elements in the array eql argument, else false' do
         expect(test_array.my_all?(Numeric)).to eql(test_array.all?(Numeric))
@@ -134,6 +147,8 @@ describe Enumerable do
   end
 
   describe '#my_any?' do
+    after_context('#my_none?')
+
     context 'when called with no &block and no argument' do
       it 'returns true if any elements of the array is truthy, else false' do
         expect(test_array.my_any?).to eql(test_array.any?)
@@ -172,6 +187,8 @@ describe Enumerable do
   end
 
   describe '#my_none?' do
+    after_context('#my_count')
+
     context 'when called with no argument and no &block' do
       it 'returns false if any of the element is truthy, else true' do
         expect(test_array.my_none?).to eql(test_array.none?)
@@ -210,6 +227,8 @@ describe Enumerable do
   end
 
   describe '#my_count' do
+    after_context('#my_map')
+
     context 'when called with no argument and no $block' do
       it 'returns the length of the array' do
         expect(test_array.my_count).to eql(test_array.length)
@@ -236,6 +255,8 @@ describe Enumerable do
   end
 
   describe '#my_map' do
+    after_context('#my_inject')
+
     context 'when no &block given' do
       it 'returns an array enumerator' do
         expect(test_array.my_map).to be_instance_of(Enumerator)
