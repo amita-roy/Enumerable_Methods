@@ -34,6 +34,12 @@ describe Enumerable do
         expect(test_range.my_each.class).to eq(test_range.each.class)
       end
     end
+
+    context 'covers negative tests' do
+      it 'throws argument error when called with an argument' do
+        expect { ['st', 'tt', 23].my_each(3) }.to raise_error(ArgumentError)
+      end
+    end
   end
 
   describe '#my_each_with_index' do
@@ -55,6 +61,16 @@ describe Enumerable do
         it do
           original_each_test = test_array.each_with_index { |e, i| e + i }
           expect(test_array.my_each_with_index { |e, i| e + i }).to eql(original_each_test)
+        end
+      end
+
+      context 'covers negative tests' do
+        it 'throws argument error when called with an argument' do
+          expect { ['st', 'tt', 23].my_each(3) }.to raise_error(ArgumentError)
+        end
+
+        it 'throws TypeError when called on a hash of string and integer' do
+          expect { { cat: 23, dog: 43 }.each_with_index { |e, i| puts e + i } }.to raise_error(TypeError)
         end
       end
     end
@@ -91,6 +107,12 @@ describe Enumerable do
     context 'when called without a &block' do
       it 'returns an array enumerator when called on an array' do
         expect(test_array.my_select).to be_instance_of(Enumerator)
+      end
+    end
+
+    context 'covers negative tests' do
+      it 'throws argument error when called with an argument' do
+        expect { { cat: 23, dog: 43 }.my_select(3) }.to raise_error(ArgumentError)
       end
     end
   end
@@ -142,6 +164,12 @@ describe Enumerable do
       it 'return false if every element in the array doesn\'t match with pattern ' do
         mixed_array = ['that', 'cat', 23, 'mat', true]
         expect(mixed_array.my_all?(/at/)).to eql(mixed_array.all?(/at/))
+      end
+    end
+
+    context 'covers negative tests' do
+      it 'throws NoMethodError when called with an argument' do
+        expect { { cat: 23, dog: 43 }.my_all? { |e| e > 5 } }.to raise_error(NoMethodError)
       end
     end
   end
@@ -211,6 +239,10 @@ describe Enumerable do
       it 'returns true if none of the elements in the range is truthy, else false' do
         expect(test_range.my_none?(4)).to eql(test_range.none?(4))
       end
+
+      it 'evalutes to true if none matches a pattern' do
+        expect(%w[dog butterfly mouse].my_none?(/a/)).to be true
+      end
     end
 
     context 'when called with only a &block' do
@@ -239,6 +271,10 @@ describe Enumerable do
       it 'returns the count of the element in the array that is eql to argument' do
         expect([2, 3, 5, 2, 4].my_count(2)).to eql(2)
       end
+
+      it 'returns the count of the element in the array that is eql to argument' do
+        expect([2, 3, 5, 2, 4].my_count(2)).to eql(2)
+      end
     end
 
     context 'when called with only a &block' do
@@ -256,6 +292,7 @@ describe Enumerable do
 
   describe '#my_map' do
     after_context('#my_inject')
+    let(:pr) { proc { |num| num < 5 } }
 
     context 'when no &block given' do
       it 'returns an array enumerator' do
@@ -265,6 +302,16 @@ describe Enumerable do
 
     it 'returns a new array' do
       expect(test_array.my_map { |e| e * 2 }).to eql([40, 6, 24, 14, 30])
+    end
+
+    it 'returns a new array with the executed proc' do
+      expect(test_array.my_map(&pr)).to eql(test_array.map(&pr))
+    end
+
+    context 'covers negative tests' do
+      it 'throws NoMethodError when called with an argument not proc' do
+        expect { ['st', 'tt', 23].my_map(3) }.to raise_error(NoMethodError)
+      end
     end
   end
 
@@ -280,12 +327,18 @@ describe Enumerable do
     end
 
     context 'when only one argument provided' do
-      it 'raise a TypeError if provided argument is not a symbol nor a string' do
-        expect { test_array.my_inject(2) }.to raise_error(TypeError)
-      end
-
       it 'return the sum of all the element in the array if argument is a  :+ symbol' do
         expect([1, 2, 3].my_inject(:+)).to eq([1, 2, 3].inject(:+))
+      end
+
+      context 'covers negative test cases' do
+        it 'raise a TypeError if provided argument is not a symbol nor a string' do
+          expect { test_array.my_inject(2) }.to raise_error(TypeError)
+        end
+
+        it 'raise a TypeError when called on a hash of string and number' do
+          expect { { cat: 23, dog: 43 }.my_inject(2, :+) }.to raise_error(TypeError)
+        end
       end
     end
 
